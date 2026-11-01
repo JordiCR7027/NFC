@@ -32,8 +32,7 @@
 
   <script>
     const API_KEY = "sk_HTbp2QI8ylBB001q";
-    // ID exacto extraído de tu panel de Short.io para magoo.s.gy/Cqgwij
-    const LINK_ID = "2128337/links/link_8VG1_034p7R8qZR2sHzNdyzrCPS"; 
+    const LINK_ID = "link_8VG1_034p7R8qZR2sHzNdyzrCPS";
 
     async function cambiarUrl(nuevaUrl, nombre) {
       const status = document.getElementById("status");
@@ -48,7 +47,10 @@
             "Content-Type": "application/json",
             "Accept": "application/json"
           },
-          body: JSON.stringify({ originalURL: nuevaUrl })
+          body: JSON.stringify({
+            originalURL: nuevaUrl,
+            domain: "magoo.s.gy"
+          })
         });
 
         if (response.ok) {
