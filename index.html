@@ -33,6 +33,7 @@
   <script>
     const API_KEY = "sk_HTbp2QI8ylBB001q";
     const LINK_ID = "link_8VG1_034p7R8qZR2sHzNdyzrCPS";
+    const DOMAIN = "magoo.s.gy";
 
     async function cambiarUrl(nuevaUrl, nombre) {
       const status = document.getElementById("status");
@@ -40,17 +41,15 @@
       status.style.color = "#ff9500";
 
       try {
-        const response = await fetch(`https://api.short.io/links/${LINK_ID}`, {
-          method: "PUT",
+        // Añadimos ?domain= en la URL para que Short.io rutee correctamente el cambio
+        const response = await fetch(`https://api.short.io/links/${LINK_ID}?domain=${DOMAIN}`, {
+          method: "POST",
           headers: {
             "Authorization": API_KEY,
             "Content-Type": "application/json",
             "Accept": "application/json"
           },
-          body: JSON.stringify({
-            originalURL: nuevaUrl,
-            domain: "magoo.s.gy"
-          })
+          body: JSON.stringify({ originalURL: nuevaUrl })
         });
 
         if (response.ok) {
