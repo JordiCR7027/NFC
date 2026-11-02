@@ -14,7 +14,7 @@
       box-shadow: 0 4px 6px rgba(0,0,0,0.3); transition: transform 0.1s; width: 100%;
     }
     button:active { transform: scale(0.95); background: #007aff; }
-    #status { margin-top: 30px; font-weight: 500; font-size: 1rem; color: #aaa; word-break: break-all; }
+    #status { margin-top: 30px; font-weight: 500; font-size: 0.9rem; color: #aaa; word-break: break-all; text-align: left; background: #1a1a1a; padding: 10px; border-radius: 8px; max-height: 150px; overflow-y: auto;}
   </style>
 </head>
 <body>
@@ -28,14 +28,14 @@
     <button onclick="cambiarUrl('https://sites.google.com/view/magoo70/sev', 'SEVILLA')">SEVILLA</button>
   </div>
 
-  <div id="status">Pulsa un botón para cambiar el destino...</div>
+  <div id="status">Pulsa un botón para ver la respuesta del servidor...</div>
 
   <script>
-    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwily-wrFuDd7tcQi8wLbZ4ILp6qK_aUlzex-959b5MspwBRTgv9_vWOitrDW11YhFhIg/exec";
+    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbw5PDdJniptFftKx9rYFzBX1Ut-69o8TVsZKMzKjQe5C5omchG-YYvL8dk6UUQC0e_N/exec";
 
     async function cambiarUrl(nuevaUrl, nombre) {
       const status = document.getElementById("status");
-      status.textContent = `Actualizando a ${nombre}...`;
+      status.textContent = `Enviando ${nombre} a Short.io...`;
       status.style.color = "#ff9500";
 
       try {
@@ -44,15 +44,10 @@
           body: JSON.stringify({ originalURL: nuevaUrl })
         });
 
-        const result = await response.json();
-
-        if (result.status === 200 || result.status === 201) {
-          status.textContent = `✓ ¡Cambiado a ${nombre} con éxito!`;
-          status.style.color = "#34c759";
-        } else {
-          status.textContent = `❌ Error ${result.status}: ${result.body}`;
-          status.style.color = "#ff3b30";
-        }
+        const textoRespuesta = await response.text();
+        // Mostramos la respuesta literal de Short.io en la caja de texto
+        status.textContent = `Respuesta: ${textoRespuesta}`;
+        status.style.color = "#34c759";
       } catch (error) {
         status.textContent = `❌ Error de red: ${error.message}`;
         status.style.color = "#ff3b30";
