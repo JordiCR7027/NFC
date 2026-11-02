@@ -5,21 +5,74 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Controlador NFC Short.io</title>
   <style>
-    body { font-family: system-ui, sans-serif; padding: 25px; max-width: 400px; margin: 0 auto; background: #121212; color: #fff; text-align: center; }
-    h2 { font-size: 1.3rem; margin-bottom: 25px; color: #ddd; }
-    .grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; }
-    button {
-      padding: 20px 10px; font-size: 16px; font-weight: bold; cursor: pointer;
-      border-radius: 12px; border: none; background: #222; color: #fff;
-      box-shadow: 0 4px 6px rgba(0,0,0,0.3); transition: transform 0.1s; width: 100%;
+    :root {
+      --bg-color: #121212;
+      --card-bg: #1e1e1e;
+      --btn-bg: #262626;
+      --btn-active: #007aff;
+      --text-main: #ffffff;
+      --text-muted: #aaaaaa;
     }
-    button:active { transform: scale(0.95); background: #007aff; }
-    #status { margin-top: 30px; font-weight: 500; font-size: 0.95rem; color: #aaa; word-break: break-all; background: #1a1a1a; padding: 12px; border-radius: 8px; text-align: left; }
+
+    body {
+      font-family: system-ui, -apple-system, sans-serif;
+      padding: 25px;
+      max-width: 400px;
+      margin: 0 auto;
+      background: var(--bg-color);
+      color: var(--text-main);
+      text-align: center;
+    }
+
+    h2 {
+      font-size: 1.4rem;
+      margin-bottom: 25px;
+      color: var(--text-main);
+      letter-spacing: -0.5px;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 15px;
+    }
+
+    button {
+      padding: 22px 10px;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      border-radius: 14px;
+      border: none;
+      background: var(--btn-bg);
+      color: var(--text-main);
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+      transition: transform 0.1s ease, background-color 0.2s ease;
+      width: 100%;
+    }
+
+    button:active {
+      transform: scale(0.96);
+      background: var(--btn-active);
+    }
+
+    #status {
+      margin-top: 30px;
+      font-weight: 500;
+      font-size: 0.95rem;
+      color: var(--text-muted);
+      word-break: break-all;
+      background: var(--card-bg);
+      padding: 14px;
+      border-radius: 10px;
+      text-align: left;
+      border: 1px solid rgba(255, 255, 255, 0.05);
+    }
   </style>
 </head>
 <body>
 
-  <h2>Controlador de Enlaces</h2>
+  <h2>Controlador de Enlaces NFC</h2>
 
   <div class="grid">
     <button onclick="cambiarUrl('https://sites.google.com/view/magoo70/mad', 'MADRID')">MADRID</button>
@@ -28,14 +81,15 @@
     <button onclick="cambiarUrl('https://sites.google.com/view/magoo70/sev', 'SEVILLA')">SEVILLA</button>
   </div>
 
-  <div id="status">Pulsa un botón para ver el resultado...</div>
+  <div id="status">Selecciona un destino para actualizar el enlace...</div>
 
   <script>
-    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycby1Airbodj8jBOwdr-la7Vy3RxXAgLXm74vYdMh3cVWwrH_ZlXchBbcyBkrkrKLFtjkyw/exec";
+    // URL de tu Web App desplegada en Google Apps Script
+    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwxYrfoyNl_IQU3zq-zYRT37ichQsYtAFcVltSA9pYGfOCs1Ji5GzUokrbSBp4enQ30/exec";
 
     async function cambiarUrl(nuevaUrl, nombre) {
       const status = document.getElementById("status");
-      status.textContent = `Actualizando a ${nombre}...`;
+      status.textContent = `Actualizando destino a ${nombre}...`;
       status.style.color = "#ff9500";
 
       try {
@@ -46,12 +100,12 @@
 
         const text = await response.text();
         
-        // Si la respuesta contiene la nueva URL o id, es que Short.io lo ha aceptado
+        // Verificamos si la respuesta de Short.io contiene los datos del enlace modificado
         if (text.includes("originalURL") || text.includes("link_")) {
-          status.textContent = `✓ ¡Cambiado a ${nombre} con éxito en Short.io!`;
+          status.textContent = `✓ ¡Enlace redirigido a ${nombre} con éxito!`;
           status.style.color = "#34c759";
         } else {
-          status.textContent = `Respuesta Short.io: ${text}`;
+          status.textContent = `Respuesta: ${text}`;
           status.style.color = "#ff9500";
         }
       } catch (error) {
