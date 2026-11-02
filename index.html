@@ -14,7 +14,7 @@
       box-shadow: 0 4px 6px rgba(0,0,0,0.3); transition: transform 0.1s; width: 100%;
     }
     button:active { transform: scale(0.95); background: #007aff; }
-    #status { margin-top: 30px; font-weight: 500; font-size: 0.9rem; color: #aaa; word-break: break-all; text-align: left; background: #1a1a1a; padding: 10px; border-radius: 8px; max-height: 150px; overflow-y: auto;}
+    #status { margin-top: 30px; font-weight: 500; font-size: 0.95rem; color: #aaa; word-break: break-all; background: #1a1a1a; padding: 12px; border-radius: 8px; text-align: left; }
   </style>
 </head>
 <body>
@@ -28,14 +28,14 @@
     <button onclick="cambiarUrl('https://sites.google.com/view/magoo70/sev', 'SEVILLA')">SEVILLA</button>
   </div>
 
-  <div id="status">Pulsa un botón para ver la respuesta del servidor...</div>
+  <div id="status">Pulsa un botón para ver el resultado...</div>
 
   <script>
-    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbw5PDdJniptFftKx9rYFzBX1Ut-69o8TVsZKMzKjQe5C5omchG-YYvL8dk6UUQC0e_N/exec";
+    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbx0JfeDd3in9wASadydmx1n7U5_LShq_vVAM23m3_eLfGkHe8hpQBprkfMSxeJqH7IkyA/exec";
 
     async function cambiarUrl(nuevaUrl, nombre) {
       const status = document.getElementById("status");
-      status.textContent = `Enviando ${nombre} a Short.io...`;
+      status.textContent = `Actualizando a ${nombre}...`;
       status.style.color = "#ff9500";
 
       try {
@@ -44,10 +44,16 @@
           body: JSON.stringify({ originalURL: nuevaUrl })
         });
 
-        const textoRespuesta = await response.text();
-        // Mostramos la respuesta literal de Short.io en la caja de texto
-        status.textContent = `Respuesta: ${textoRespuesta}`;
-        status.style.color = "#34c759";
+        const text = await response.text();
+        
+        // Si la respuesta contiene la nueva URL o id, es que Short.io lo ha aceptado
+        if (text.includes("originalURL") || text.includes("link_")) {
+          status.textContent = `✓ ¡Cambiado a ${nombre} con éxito en Short.io!`;
+          status.style.color = "#34c759";
+        } else {
+          status.textContent = `Respuesta Short.io: ${text}`;
+          status.style.color = "#ff9500";
+        }
       } catch (error) {
         status.textContent = `❌ Error de red: ${error.message}`;
         status.style.color = "#ff3b30";
