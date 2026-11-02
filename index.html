@@ -14,7 +14,7 @@
       box-shadow: 0 4px 6px rgba(0,0,0,0.3); transition: transform 0.1s; width: 100%;
     }
     button:active { transform: scale(0.95); background: #007aff; }
-    #status { margin-top: 30px; font-weight: 500; font-size: 1rem; color: #aaa; }
+    #status { margin-top: 30px; font-weight: 500; font-size: 1rem; color: #aaa; word-break: break-all; }
   </style>
 </head>
 <body>
@@ -31,7 +31,6 @@
   <div id="status">Pulsa un botón para cambiar el destino...</div>
 
   <script>
-    // Pega aquí abajo entre las comillas la URL del Web App de Google Apps Script que copiaste:
     const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwily-wrFuDd7tcQi8wLbZ4ILp6qK_aUlzex-959b5MspwBRTgv9_vWOitrDW11YhFhIg/exec";
 
     async function cambiarUrl(nuevaUrl, nombre) {
@@ -45,15 +44,17 @@
           body: JSON.stringify({ originalURL: nuevaUrl })
         });
 
-        if (response.ok) {
+        const result = await response.json();
+
+        if (result.status === 200 || result.status === 201) {
           status.textContent = `✓ ¡Cambiado a ${nombre} con éxito!`;
           status.style.color = "#34c759";
         } else {
-          status.textContent = `❌ Error en servidor.`;
+          status.textContent = `❌ Error ${result.status}: ${result.body}`;
           status.style.color = "#ff3b30";
         }
       } catch (error) {
-        status.textContent = `❌ Error de red.`;
+        status.textContent = `❌ Error de red: ${error.message}`;
         status.style.color = "#ff3b30";
       }
     }
